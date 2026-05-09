@@ -89,3 +89,8 @@ export default defineConfig([
 - Version: v1.0.1
 - PR Title: Create test.txt
 - Chuck Norris Joke: Chuck Norris once shot down a Russian MIG in an aerial dogfight. Chuck was flying in a hot air ballon.
+
+## Latest Release Info
+- Version: v1.0.2
+- PR Title: Create test2.txt
+- Chuck Norris Joke: When E.F. Hutton spoke, people listened. That's because his friend Chuck Norris was ready to throttle any dumbass who wasn't paying attention.
