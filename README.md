@@ -1,96 +1,30 @@
-# React + TypeScript + Vite
+# CI/CD Project — React + Vite + GitHub Actions
 
+![CI](https://github.com/trevla09/ci-cd-lr-project/actions/workflows/ci.yml/badge.svg)
+![Deploy](https://github.com/trevla09/ci-cd-lr-project/actions/workflows/deploy.yml/badge.svg)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Опис проєкту
+Навчальний проєкт для демонстрації CI/CD pipeline на базі GitHub Actions.
+Застосунок побудований на React + TypeScript + Vite.
 
-Currently, two official plugins are available:
+## Функціональність
+- Автоматична перевірка якості коду (lint, tests, build)
+- Автоматичне створення релізів при merge у main
+- Автоматичний деплой на GitHub Pages
+- Інтеграція з Chuck Norris API для генерації жартів у релізах
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Посилання
+- Застосунок: https://trevla09.github.io/ci-cd-lr-project/
+- Релізи: https://github.com/trevla09/ci-cd-lr-project/releases
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Запуск локально
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-# ci-cd-lr-project
-
-
-
-
-
-
-
-## Latest Release Info
-- Version: v1.0.7
-- PR Title: Manual push to main
-- Chuck Norris Joke: A mere slap in your face from Chuck Norris causes permanent, life long strabismus.
-
-## Latest Release Info
-- Version: v1.0.1
-- PR Title: Create test.txt
-- Chuck Norris Joke: Chuck Norris once shot down a Russian MIG in an aerial dogfight. Chuck was flying in a hot air ballon.
-
-## Latest Release Info
-- Version: v1.0.2
-- PR Title: Create test2.txt
-- Chuck Norris Joke: When E.F. Hutton spoke, people listened. That's because his friend Chuck Norris was ready to throttle any dumbass who wasn't paying attention.
+## Технології
+- React 18 + TypeScript
+- Vite
+- GitHub Actions (CI/CD)
+- SonarQube Cloud (аналіз якості коду)
