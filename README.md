@@ -84,3 +84,8 @@ export default defineConfig([
 - Version: v1.0.7
 - PR Title: Manual push to main
 - Chuck Norris Joke: A mere slap in your face from Chuck Norris causes permanent, life long strabismus.
+
+## Latest Release Info
+- Version: v1.0.1
+- PR Title: Create test.txt
+- Chuck Norris Joke: Chuck Norris once shot down a Russian MIG in an aerial dogfight. Chuck was flying in a hot air ballon.
