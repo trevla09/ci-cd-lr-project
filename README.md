@@ -28,3 +28,8 @@ npm run dev
 - Vite
 - GitHub Actions (CI/CD)
 - SonarQube Cloud (аналіз якості коду)
+
+## Latest Release Info
+- Version: v1.0.3
+- PR Title: docs: add project description to README (#3)
+- Chuck Norris Joke: A man woke in Intensive Care with severe injuries and no memory of what happened. An investigation determined he was hit by either a freight train or by Chuck Norris.
