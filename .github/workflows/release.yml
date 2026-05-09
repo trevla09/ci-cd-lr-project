@@ -1,10 +1,8 @@
 name: Release
-
 on:
   pull_request:
     branches: [main]
     types: [closed]
-
 jobs:
   release:
     if: github.event.pull_request.merged == true
@@ -12,14 +10,17 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-
     steps:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set PR variables
+        run: |
+          echo "PR_TITLE=${{ github.event.pull_request.title }}" >> $GITHUB_ENV
+          echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+
       - name: Get joke from Chuck Norris API
-        id: joke
         run: |
           JOKE=$(curl -s https://api.chucknorris.io/jokes/random | python3 -c "import sys,json; print(json.load(sys.stdin)['value'])")
           echo "joke=$JOKE" >> $GITHUB_ENV
@@ -39,7 +40,7 @@ jobs:
           gh release create $VERSION \
             --title "Release $VERSION" \
             --notes "## Release $VERSION
-          - PR: ${{ github.event.pull_request.title }}
+          - PR: $PR_TITLE
           - Chuck Norris: $joke"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -50,7 +51,7 @@ jobs:
 
           ## Latest Release Info
           - Version: $VERSION
-          - PR Title: ${{ github.event.pull_request.title }}
+          - PR Title: $PR_TITLE
           - Chuck Norris Joke: $joke
           EOF
           git config user.name "github-actions"
@@ -61,7 +62,7 @@ jobs:
 
       - name: Add joke comment to PR
         run: |
-          gh pr comment ${{ github.event.pull_request.number }} \
+          gh pr comment $PR_NUMBER \
             --body "🤠 Chuck Norris says: $joke"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
