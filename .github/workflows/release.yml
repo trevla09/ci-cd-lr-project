@@ -1,0 +1,74 @@
+name: Release
+
+on:
+  pull_request:
+    branches: [main]
+    types: [closed]
+
+jobs:
+  release:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get joke from Chuck Norris API
+        id: joke
+        run: |
+          JOKE=$(curl -s https://api.chucknorris.io/jokes/random | python3 -c "import sys,json; print(json.load(sys.stdin)['value'])")
+          echo "joke=$JOKE" >> $GITHUB_OUTPUT
+
+      - name: Set version
+        id: version
+        run: echo "version=v1.0.${{ github.run_number }}" >> $GITHUB_OUTPUT
+
+      - name: Create Git tag
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git tag ${{ steps.version.outputs.version }}
+          git push origin ${{ steps.version.outputs.version }}
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          release_name: Release ${{ steps.version.outputs.version }}
+          body: |
+            ## Release ${{ steps.version.outputs.version }}
+            - PR: ${{ github.event.pull_request.title }}
+            - Chuck Norris: ${{ steps.joke.outputs.joke }}
+
+      - name: Update README
+        run: |
+          JOKE="${{ steps.joke.outputs.joke }}"
+          VERSION="${{ steps.version.outputs.version }}"
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          cat >> README.md << EOF
+
+          ## Latest Release Info
+          - Version: $VERSION
+          - PR Title: $PR_TITLE
+          - Chuck Norris Joke: $JOKE
+          EOF
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add README.md
+          git commit -m "docs: update README with release info $VERSION [skip ci]"
+          git push origin main
+
+      - name: Add joke comment to PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '🤠 Chuck Norris says: ${{ steps.joke.outputs.joke }}'
+            })
