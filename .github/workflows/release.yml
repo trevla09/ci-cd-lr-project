@@ -11,50 +11,47 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get joke from Chuck Norris API
         id: joke
         run: |
           JOKE=$(curl -s https://api.chucknorris.io/jokes/random | python3 -c "import sys,json; print(json.load(sys.stdin)['value'])")
-          echo "joke=$JOKE" >> $GITHUB_OUTPUT
+          echo "joke=$JOKE" >> $GITHUB_ENV
 
       - name: Set version
-        id: version
-        run: echo "version=v1.0.${{ github.run_number }}" >> $GITHUB_OUTPUT
+        run: echo "VERSION=v1.0.${{ github.run_number }}" >> $GITHUB_ENV
 
       - name: Create Git tag
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git tag ${{ steps.version.outputs.version }}
-          git push origin ${{ steps.version.outputs.version }}
+          git tag $VERSION
+          git push origin $VERSION
 
       - name: Create GitHub Release
-        uses: actions/create-release@v1
+        run: |
+          gh release create $VERSION \
+            --title "Release $VERSION" \
+            --notes "## Release $VERSION
+          - PR: ${{ github.event.pull_request.title }}
+          - Chuck Norris: $joke"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.version.outputs.version }}
-          release_name: Release ${{ steps.version.outputs.version }}
-          body: |
-            ## Release ${{ steps.version.outputs.version }}
-            - PR: ${{ github.event.pull_request.title }}
-            - Chuck Norris: ${{ steps.joke.outputs.joke }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update README
         run: |
-          JOKE="${{ steps.joke.outputs.joke }}"
-          VERSION="${{ steps.version.outputs.version }}"
-          PR_TITLE="${{ github.event.pull_request.title }}"
           cat >> README.md << EOF
 
           ## Latest Release Info
           - Version: $VERSION
-          - PR Title: $PR_TITLE
-          - Chuck Norris Joke: $JOKE
+          - PR Title: ${{ github.event.pull_request.title }}
+          - Chuck Norris Joke: $joke
           EOF
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
@@ -63,12 +60,8 @@ jobs:
           git push origin main
 
       - name: Add joke comment to PR
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '🤠 Chuck Norris says: ${{ steps.joke.outputs.joke }}'
-            })
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} \
+            --body "🤠 Chuck Norris says: $joke"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
